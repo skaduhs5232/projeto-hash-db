@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  padding: 20px;
+  
+  .app-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}

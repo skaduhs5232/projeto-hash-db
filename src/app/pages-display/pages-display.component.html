@@ -1,0 +1,9 @@
+<div *ngIf="firstPage && lastPage">
+    <h3>Primeira Página ({{ firstPage.number }})</h3>
+<pre>{{ firstPage.records | json }}</pre>
+
+    <h3>Última Página ({{ lastPage.number }})</h3>
+    <pre>{{ lastPage.records | json }}</pre>
+
+  </div>
+  
