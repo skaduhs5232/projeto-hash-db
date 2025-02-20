@@ -1,9 +1,51 @@
-<div *ngIf="firstPage && lastPage">
-    <h3>Primeira Página ({{ firstPage.number }})</h3>
-<pre>{{ firstPage.records | json }}</pre>
-
-    <h3>Última Página ({{ lastPage.number }})</h3>
-    <pre>{{ lastPage.records | json }}</pre>
-
+<div class="pages-container">
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Carregando páginas...</p>
+    </div>
+  
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+  
+    <div *ngIf="!isLoading && !error && (firstPage || lastPage)" class="pages-grid">
+      <div class="page-card" *ngIf="firstPage">
+        <div class="page-header">
+          <h3>Primeira Página</h3>
+          <div class="page-info">
+            <span class="page-number">Página {{ firstPage.number }}</span>
+            <span class="record-count">{{ getRecordCount(firstPage) }} registros</span>
+          </div>
+        </div>
+        <div class="records-container">
+          <div *ngFor="let record of firstPage.records" class="record-item">
+            {{ record }}
+          </div>
+        </div>
+      </div>
+  
+      <div class="page-divider">
+        <span>• • •</span>
+      </div>
+  
+      <div class="page-card" *ngIf="lastPage">
+        <div class="page-header">
+          <h3>Última Página</h3>
+          <div class="page-info">
+            <span class="page-number">Página {{ lastPage.number }}</span>
+            <span class="record-count">{{ getRecordCount(lastPage) }} registros</span>
+          </div>
+        </div>
+        <div class="records-container">
+          <div *ngFor="let record of lastPage.records" class="record-item">
+            {{ record }}
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngIf="!isLoading && !error && !firstPage && !lastPage" class="empty-state">
+      <p>Nenhuma página disponível</p>
+    </div>
   </div>
   

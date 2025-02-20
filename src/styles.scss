@@ -35,6 +35,19 @@ body {
   padding: map.get($spacers, '3');
 }
 
+app-log-modal {
+  .modal-content {
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-header {
+    cursor: move;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eaeaea;
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: map.get($spacers, '3');
   font-weight: 500;

@@ -18,7 +18,7 @@ export class DataService {
 
   constructor(
     private http: HttpClient,
-    private logService: LogService
+    private logService: LogService,
   ) {}
 
   // Carrega o arquivo de palavras e cria as páginas

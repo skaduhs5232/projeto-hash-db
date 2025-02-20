@@ -27,7 +27,7 @@ import { LogService } from './services/log.service';
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [DataService] // Forneça o DataService aqui
+  providers: [DataService] 
 })
 export class AppComponent {
   indexResult: any;
@@ -37,7 +37,13 @@ export class AppComponent {
 
   @ViewChild(StatisticsComponent) statisticsComponent?: StatisticsComponent;
 
-  constructor(private logService: LogService) {}
+  constructor(private logService: LogService,private dataService: DataService) {
+    
+  }
+
+  get pages() {
+    return this.dataService.pages;
+  }
 
   onSearchCompleted(event: {
     indexResult: any,

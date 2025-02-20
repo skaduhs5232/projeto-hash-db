@@ -1,23 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Page } from '../models/page.model';
+
+export interface Page {
+  number: number;
+  records: string[];
+}
 
 @Component({
   standalone: true,
   selector: 'app-pages-display',
   templateUrl: './pages-display.component.html',
-  styleUrls: ['./pages-display.component.css'],
-  imports: [CommonModule]  // Importa diretivas como *ngIf, pipes (json, number, etc.)
+  styleUrls: ['./pages-display.component.scss'],
+  imports: [CommonModule]
 })
-export class PagesDisplayComponent {
+export class PagesDisplayComponent implements OnChanges {
+  @Input() pages: Page[] = [];
   firstPage: Page | null = null;
   lastPage: Page | null = null;
+  isLoading = false;
+  error: string | null = null;
 
-  // Lógica para atualizar as páginas, por exemplo:
+  ngOnChanges(): void {
+    try {
+      this.updatePages(this.pages);
+    } catch (err) {
+      this.error = 'Erro ao atualizar páginas';
+      console.error(err);
+    }
+  }
+
   updatePages(pages: Page[]): void {
     if (pages.length) {
       this.firstPage = pages[0];
       this.lastPage = pages[pages.length - 1];
+      this.error = null;
+    } else {
+      this.firstPage = null;
+      this.lastPage = null;
     }
+  }
+
+  getRecordCount(page: Page | null): number {
+    return page?.records?.length || 0;
   }
 }
