@@ -6,8 +6,10 @@
                    class="form-control" 
                    placeholder="Digite a chave" 
                    [(ngModel)]="searchKey" />
-            <button class="btn btn-primary" (click)="searchByIndex()">Buscar com Índice</button>
-            <button class="btn btn-secondary" (click)="searchByTableScan()">Table Scan</button>
+            <div style="display: flex; gap: 40px; margin-top: 20px;">
+             <button class="btn btn-primary" (click)="searchByIndex()">Buscar com Índice</button>
+             <button class="btn btn-secondary" (click)="searchByTableScan()">Table Scan</button>
+            </div>
         </div>
     </div>
 </div>

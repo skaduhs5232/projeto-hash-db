@@ -1,59 +1,145 @@
-# ProjetoHash
+# Projeto Hash Database (Índice Hash Estático)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
+## Visão Geral
+Este projeto implementa um sistema de banco de dados com índice hash estático em Angular, demonstrando conceitos fundamentais de estruturas de dados e organização de arquivos.
 
-## Development server
+## Estrutura do Projeto
 
-To start a local development server, run:
+### 1. Componentes Principais
 
+#### 1.1 DataService (`data.service.ts`)
+- **Função**: Núcleo do sistema, gerenciando dados e operações de hash
+- **Responsabilidades**:
+  - Carregamento de dados do arquivo
+  - Implementação do índice hash
+  - Gerenciamento de buckets
+  - Execução de buscas (hash e sequencial)
+  - Cálculo de estatísticas
+
+#### 1.2 Modelos de Dados
+##### 1.2.1 Bucket (`models/bucket.model.ts`)
+- Implementa a estrutura do bucket
+- Gerencia entradas principais e overflow
+- Controla inserções com limite máximo de entradas
+
+##### 1.2.2 Page (`models/page.model.ts`)
+- Define a estrutura de páginas
+- Armazena registros em grupos
+
+### 2. Interface do Usuário
+
+#### 2.1 Componentes de Visualização
+
+##### DataLoader (`data-loader.component.ts`)
+- Controla o carregamento inicial de dados
+- Permite configurar tamanho das páginas
+- Valida parâmetros de entrada
+
+##### SearchComponent (`search.component.ts`)
+- Interface de busca
+- Executa buscas por índice hash e table scan
+- Mede tempo de execução
+
+##### ResultsComponent (`results.component.ts`)
+- Exibe resultados das buscas
+- Compara performance entre métodos
+- Mostra estatísticas de acesso
+
+##### StatisticsComponent (`statistics.component.ts`)
+- Visualiza métricas do índice hash
+- Gráficos de distribuição
+- Análise de colisões e overflow
+
+##### PagesDisplay (`pages-display.component.ts`)
+- Visualização de páginas de dados
+- Destaca palavras encontradas
+- Navegação entre páginas
+
+### 3. Funcionalidades Principais
+
+#### 3.1 Índice Hash
+```typescript
+hash(key: string): number {
+    let hashValue = 0;
+    for (let i = 0; i < key.length; i++) {
+        hashValue = (Math.imul(31, hashValue) + key.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hashValue) % this.numBuckets;
+}
+```
+
+#### 3.2 Busca por Índice
+- Usa função hash para localizar bucket
+- Verifica entradas principais e overflow
+- Conta acessos a disco
+
+#### 3.3 Table Scan
+- Busca sequencial em todas as páginas
+- Serve como benchmark de comparação
+- Conta páginas acessadas
+
+### 4. Detalhes de Implementação
+
+#### 4.1 Estrutura de Armazenamento
+- Páginas de tamanho configurável
+- Buckets com limite de entradas
+- Área de overflow por bucket
+
+#### 4.2 Métricas e Estatísticas
+- Taxa de colisões
+- Taxa de overflow
+- Distribuição de registros
+- Tempo de busca
+- Comparação de métodos
+
+### 5. Como Executar
+
+1. **Pré-requisitos**
 ```bash
+# Instalar dependências
+npm install
+```
+
+2. **Desenvolvimento**
+```bash
+# Iniciar servidor de desenvolvimento
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+3. **Construção**
 ```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+# Gerar build de produção
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### 6. Testes e Validação
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+#### 6.1 Testes Unitários
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+#### 6.2 Casos de Teste Recomendados
+- Busca por palavras existentes
+- Busca por palavras inexistentes
+- Avaliação de colisões
+- Medição de performance
 
-For end-to-end (e2e) testing, run:
+### 7. Limitações e Considerações
 
-```bash
-ng e2e
-```
+1. **Índice Hash**
+   - Hash estático (não expansível)
+   - Colisões resolvidas por overflow
+   - Distribuição dependente da função hash
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+2. **Performance**
+   - Melhor caso: O(1) para busca por índice
+   - Pior caso: O(n) para table scan
+   - Overhead de memória para índice
 
-## Additional Resources
+3. **Escalabilidade**
+   - Limitada pelo número fixo de buckets
+   - Degradação com muitos overflows
+   - Memória proporcional ao volume de dados
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
