@@ -8,7 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-data-loader',
   templateUrl: './data-loader.component.html',
-  styleUrls: ['./data-loader.component.css'],
+  styleUrls: ['./data-loader.component.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule]
 })

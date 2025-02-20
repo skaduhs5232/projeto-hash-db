@@ -45,10 +45,12 @@ export class AppComponent {
     indexSearchTime: number,
     tableScanTime: number
   }): void {
+    this.logService.addLog('[AppComponent] onSearchCompleted chamado');
     this.indexResult = event.indexResult;
     this.tableScanResult = event.tableScanResult;
     this.indexSearchTime = event.indexSearchTime;
     this.tableScanTime = event.tableScanTime;
+    this.logService.addLog('[AppComponent] Resultados da pesquisa atualizados');
   }
 
   onDataLoaded() {
