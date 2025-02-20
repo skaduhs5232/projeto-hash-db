@@ -1,22 +1,23 @@
-<div>
-    <h3>Resultado da Busca com Índice</h3>
-    <p *ngIf="indexResult && indexResult.found">
+<div class="card">
+  <div class="card-body">
+    <h3 class="card-title">Resultado da Busca com Índice</h3>
+    <p *ngIf="indexResult && indexResult.found" class="result-text">
       Chave encontrada na página {{ indexResult.page }} 
       (Custo: {{ indexResult.cost }} acesso(s), Tempo: {{ indexSearchTime.toFixed(2) }} ms)
     </p>
-    <p *ngIf="indexResult && !indexResult.found">
+    <p *ngIf="indexResult && !indexResult.found" class="result-text">
       Chave não encontrada com o índice.
     </p>
   </div>
   
-  <div>
-    <h3>Resultado do Table Scan</h3>
-    <p *ngIf="tableScanResult && tableScanResult.found">
+  <div class="card-body">
+    <h3 class="card-title">Resultado do Table Scan</h3>
+    <p *ngIf="tableScanResult && tableScanResult.found" class="result-text">
       Chave encontrada na página {{ tableScanResult.page }} 
       (Custo: {{ tableScanResult.cost }} página(s), Tempo: {{ tableScanTime.toFixed(2) }} ms)
     </p>
-    <p *ngIf="tableScanResult && !tableScanResult.found">
+    <p *ngIf="tableScanResult && !tableScanResult.found" class="result-text">
       Chave não encontrada no table scan.
     </p>
   </div>
-  
+</div>

@@ -29,3 +29,43 @@
     }
   }
 }
+.stats-info {
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.stat-value {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #0d6efd;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.text-muted {
+  font-size: 0.9em;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Make the line chart span full width */
+.chart-container:last-child {
+  grid-column: 1 / -1;
+}

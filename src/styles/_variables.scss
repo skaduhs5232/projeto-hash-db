@@ -1,0 +1,57 @@
+// Colors
+$colors: (
+  'primary': #2196f3,
+  'secondary': #1976d2,
+  'background': #f5f5f5,
+  'text': #333,
+  'border': #ddd,
+  'success': #4caf50,
+  'error': #f44336,
+  'white': #ffffff,
+  'gray-100': #f8f9fa,
+  'gray-200': #e9ecef,
+  'gray-300': #dee2e6
+);
+
+// Typography
+$font-family-base: 'Roboto', sans-serif;
+$font-sizes: (
+  'xs': 0.75rem,
+  'sm': 0.875rem,
+  'base': 1rem,
+  'lg': 1.125rem,
+  'xl': 1.25rem,
+  'xxl': 1.5rem
+);
+
+// Spacing
+$spacers: (
+  '0': 0,
+  '1': 0.25rem,
+  '2': 0.5rem,
+  '3': 1rem,
+  '4': 1.5rem,
+  '5': 3rem
+);
+
+// Breakpoints
+$breakpoints: (
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px
+);
+
+// Border radius
+$border-radius: (
+  'sm': 4px,
+  'md': 8px,
+  'lg': 12px
+);
+
+// Shadows
+$shadows: (
+  'sm': 0 2px 4px rgba(0, 0, 0, 0.1),
+  'md': 0 4px 6px rgba(0, 0, 0, 0.1),
+  'lg': 0 10px 15px rgba(0, 0, 0, 0.1)
+);

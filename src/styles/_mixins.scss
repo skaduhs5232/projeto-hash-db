@@ -1,0 +1,37 @@
+@use 'sass:map';
+@use 'variables' as *;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin card-container {
+  background: map.get($colors, 'white');
+  padding: map.get($spacers, '4');
+  border-radius: map.get($border-radius, 'md');
+  box-shadow: map.get($shadows, 'sm');
+}
+
+@mixin responsive($breakpoint) {
+  @media (min-width: map.get($breakpoints, $breakpoint)) {
+    @content;
+  }
+}
+
+@mixin button-variant($bg-color, $hover-color) {
+  background-color: $bg-color;
+  color: map.get($colors, 'white');
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: $hover-color;
+  }
+}
+
+@mixin grid-container($columns: 1) {
+  display: grid;
+  gap: map.get($spacers, '3');
+  grid-template-columns: repeat($columns, 1fr);
+}

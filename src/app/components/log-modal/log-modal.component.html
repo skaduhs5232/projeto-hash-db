@@ -1,0 +1,11 @@
+<div class="log-modal" cdkDrag>
+  <div class="log-header" cdkDragHandle>
+    <h3>Logs</h3>
+    <button class="clear-btn" (click)="clearLogs()">Limpar</button>
+  </div>
+  <ng-scrollbar class="log-content">
+    <div *ngFor="let log of logs$ | async" class="log-entry">
+      {{ log }}
+    </div>
+  </ng-scrollbar>
+</div>

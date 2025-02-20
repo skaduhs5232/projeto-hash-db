@@ -1,7 +1,22 @@
-<div>
-    <h2>Carregar Dados</h2>
-    <label>Tamanho da Página: </label>
-    <input type="number" [(ngModel)]="pageSize" />
-    <button (click)="loadData()">Carregar Dados</button>
-  </div>
-  
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">Carregar Dados</h2>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Tamanho da Página:</span>
+            <input type="number" 
+                   class="form-control" 
+                   [(ngModel)]="pageSize" 
+                   [min]="minPageSize"
+                   [max]="maxPageSize"
+                   (ngModelChange)="onPageSizeChange($event)" />
+            <button class="btn btn-primary" 
+                    (click)="loadData()"
+                    [disabled]="!isValidPageSize">
+                Carregar Dados
+            </button>
+        </div>
+        <div *ngIf="!isValidPageSize" class="alert alert-warning">
+            O tamanho da página deve estar entre {{minPageSize}} e {{maxPageSize}}
+        </div>
+    </div>
+</div>
