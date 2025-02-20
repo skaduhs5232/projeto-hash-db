@@ -9,7 +9,7 @@
     </div>
   
     <div *ngIf="!isLoading && !error && (firstPage || lastPage)" class="pages-grid">
-      <div class="page-card" *ngIf="firstPage">
+      <div class="page-card" *ngIf="firstPage" #firstPageContainer>
         <div class="page-header">
           <h3>Primeira Página</h3>
           <div class="page-info">
@@ -18,7 +18,9 @@
           </div>
         </div>
         <div class="records-container">
-          <div *ngFor="let record of firstPage.records" class="record-item">
+          <div *ngFor="let record of firstPage.records" 
+               class="record-item"
+               [class.highlighted]="shouldHighlight(record)">
             {{ record }}
           </div>
         </div>
@@ -28,7 +30,7 @@
         <span>• • •</span>
       </div>
   
-      <div class="page-card" *ngIf="lastPage">
+      <div class="page-card" *ngIf="lastPage" #lastPageContainer>
         <div class="page-header">
           <h3>Última Página</h3>
           <div class="page-info">
@@ -37,7 +39,9 @@
           </div>
         </div>
         <div class="records-container">
-          <div *ngFor="let record of lastPage.records" class="record-item">
+          <div *ngFor="let record of lastPage.records" 
+               class="record-item"
+               [class.highlighted]="shouldHighlight(record)">
             {{ record }}
           </div>
         </div>
@@ -48,4 +52,3 @@
       <p>Nenhuma página disponível</p>
     </div>
   </div>
-  

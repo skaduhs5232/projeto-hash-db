@@ -1,23 +1,92 @@
-<div class="card">
-  <div class="card-body">
-    <h3 class="card-title">Resultado da Busca com Índice</h3>
-    <p *ngIf="indexResult && indexResult.found" class="result-text">
-      Chave encontrada na página {{ indexResult.page }} 
-      (Custo: {{ indexResult.cost }} acesso(s), Tempo: {{ indexSearchTime.toFixed(2) }} ms)
-    </p>
-    <p *ngIf="indexResult && !indexResult.found" class="result-text">
-      Chave não encontrada com o índice.
-    </p>
+<div class="results-container">
+  <div class="results-header">
+    <h2>Resultados da Busca</h2>
+    <div class="comparison-summary">
+      <div class="performance-badge">
+        {{ getPerformanceComparison() }}
+      </div>
+    </div>
   </div>
-  
-  <div class="card-body">
-    <h3 class="card-title">Resultado do Table Scan</h3>
-    <p *ngIf="tableScanResult && tableScanResult.found" class="result-text">
-      Chave encontrada na página {{ tableScanResult.page }} 
-      (Custo: {{ tableScanResult.cost }} página(s), Tempo: {{ tableScanTime.toFixed(2) }} ms)
-    </p>
-    <p *ngIf="tableScanResult && !tableScanResult.found" class="result-text">
-      Chave não encontrada no table scan.
-    </p>
+
+  <div class="results-grid">
+    <!-- Resultado da Busca por Índice -->
+    <div class="result-card" [class.found]="indexResult?.found">
+      <div class="card-header">
+        <h3>Busca por Índice</h3>
+        <div class="method-badge">Hash</div>
+      </div>
+      <div class="card-content">
+        <div class="result-status">
+          <span class="status-icon" [class.success]="indexResult?.found">
+            {{ indexResult?.found ? '✓' : '×' }}
+          </span>
+          <span class="status-text">
+            {{ indexResult?.found ? 'Encontrado' : 'Não encontrado' }}
+          </span>
+        </div>
+        
+        <div class="metrics-grid">
+          <div class="metric">
+            <label>Página</label>
+            <span>{{ (indexResult?.page ?? -1) >= 0 ? indexResult?.page : 'N/A' }}</span>
+          </div>
+          <div class="metric">
+            <label>Acessos</label>
+            <span>{{ indexResult?.cost ?? 0 }}</span>
+          </div>
+          <div class="metric">
+            <label>Tempo</label>
+            <span>{{ indexSearchTime.toFixed(2) }}ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resultado do Table Scan -->
+    <div class="result-card" [class.found]="tableScanResult?.found">
+      <div class="card-header">
+        <h3>Table Scan</h3>
+        <div class="method-badge">Sequencial</div>
+      </div>
+      <div class="card-content">
+        <div class="result-status">
+          <span class="status-icon" [class.success]="tableScanResult?.found">
+            {{ tableScanResult?.found ? '✓' : '×' }}
+          </span>
+          <span class="status-text">
+            {{ tableScanResult?.found ? 'Encontrado' : 'Não encontrado' }}
+          </span>
+        </div>
+        
+        <div class="metrics-grid">
+          <div class="metric">
+            <label>Página</label>
+            <span>{{ (tableScanResult?.page ?? -1) >= 0 ? tableScanResult?.page : 'N/A' }}</span>
+          </div>
+          <div class="metric">
+            <label>Páginas Lidas</label>
+            <span>{{ tableScanResult?.cost ?? 0 }}</span>
+          </div>
+          <div class="metric">
+            <label>Tempo</label>
+            <span>{{ tableScanTime.toFixed(2) }}ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-details">
+    <h4>Análise Comparativa</h4>
+    <div class="comparison-metrics">
+      <div class="comparison-metric">
+        <label>Diferença de Acessos:</label>
+        <span>{{ getCostComparison() }}</span>
+      </div>
+      <div class="comparison-metric">
+        <label>Economia de Tempo:</label>
+        <span>{{ getTimeDifference() }}ms</span>
+      </div>
+    </div>
   </div>
 </div>

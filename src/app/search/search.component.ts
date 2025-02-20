@@ -17,12 +17,7 @@ export class SearchComponent {
   indexSearchTime: number = 0;
   tableScanTime: number = 0;
 
-  @Output() searchCompleted = new EventEmitter<{
-    indexResult: any,
-    tableScanResult: any,
-    indexSearchTime: number,
-    tableScanTime: number
-  }>();
+ 
 
   constructor(private dataService: DataService) {}
 
@@ -40,12 +35,21 @@ export class SearchComponent {
     this.emitResults();
   }
 
+  @Output() searchCompleted = new EventEmitter<{
+    indexResult: any,
+    tableScanResult: any,
+    indexSearchTime: number,
+    tableScanTime: number,
+    searchWord: string
+  }>();
+  
   emitResults(): void {
     this.searchCompleted.emit({
       indexResult: this.indexResult,
       tableScanResult: this.tableScanResult,
       indexSearchTime: this.indexSearchTime,
-      tableScanTime: this.tableScanTime
+      tableScanTime: this.tableScanTime,
+      searchWord: this.searchKey
     });
   }
 }

@@ -23,39 +23,43 @@ import { LogService } from './services/log.service';
     SearchComponent,
     ResultsComponent,
     StatisticsComponent,
-    LogModalComponent
+    LogModalComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [DataService] 
+  providers: [DataService],
 })
 export class AppComponent {
   indexResult: any;
   tableScanResult: any;
   indexSearchTime: number = 0;
   tableScanTime: number = 0;
+  currentSearchWord: string = '';
 
   @ViewChild(StatisticsComponent) statisticsComponent?: StatisticsComponent;
 
-  constructor(private logService: LogService,private dataService: DataService) {
-    
-  }
+  constructor(
+    private logService: LogService,
+    private dataService: DataService
+  ) {}
 
   get pages() {
     return this.dataService.pages;
   }
 
   onSearchCompleted(event: {
-    indexResult: any,
-    tableScanResult: any,
-    indexSearchTime: number,
-    tableScanTime: number
+    indexResult: any;
+    tableScanResult: any;
+    indexSearchTime: number;
+    tableScanTime: number;
+    searchWord: string;
   }): void {
     this.logService.addLog('[AppComponent] onSearchCompleted chamado');
     this.indexResult = event.indexResult;
     this.tableScanResult = event.tableScanResult;
     this.indexSearchTime = event.indexSearchTime;
     this.tableScanTime = event.tableScanTime;
+    this.currentSearchWord = event.searchWord;
     this.logService.addLog('[AppComponent] Resultados da pesquisa atualizados');
   }
 
@@ -64,8 +68,9 @@ export class AppComponent {
     if (this.statisticsComponent) {
       this.logService.addLog('[AppComponent] Atualizando estatísticas...');
       this.statisticsComponent.updateStatistics();
-    } else {
-      this.logService.addLog('[AppComponent] ERRO: StatisticsComponent não encontrado!');
     }
+    this.logService.addLog(
+      `[AppComponent] ${this.pages.length} páginas carregadas`
+    );
   }
 }

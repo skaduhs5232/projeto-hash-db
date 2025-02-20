@@ -1,31 +1,37 @@
 <div class="container">
-    <h1 class="text-center mb-4">Índice Hash Estático</h1>
+  <h1 class="text-center mb-4">Índice Hash Estático</h1>
 
-    <div class="row">
-        <div class="col-12 mb-4">
-            <app-data-loader (dataLoaded)="onDataLoaded()"></app-data-loader>
-        </div>
-
-        <div class="col-12 mb-4">
-            <app-pages-display [pages]="pages"></app-pages-display>
-        </div>
-
-        <div class="col-12 mb-4">
-            <app-search (searchCompleted)="onSearchCompleted($event)"></app-search>
-        </div>
-
-        <div class="col-12 mb-4">
-            <app-results 
-                [indexResult]="indexResult" 
-                [tableScanResult]="tableScanResult" 
-                [indexSearchTime]="indexSearchTime" 
-                [tableScanTime]="tableScanTime">
-            </app-results>
-        </div>
-
-        <div class="col-12">
-            <app-statistics></app-statistics>
-        </div>
+  <div class="row">
+    <div class="col-12 mb-4">
+      <app-data-loader (dataLoaded)="onDataLoaded()"></app-data-loader>
     </div>
+
+    <div class="col-12 mb-4">
+      <app-search (searchCompleted)="onSearchCompleted($event)"></app-search>
+    </div>
+
+    <div class="col-12 mb-4">
+      <app-pages-display
+        [pages]="pages"
+        [searchWord]="currentSearchWord"
+        [foundInPage]="indexResult?.page || tableScanResult?.page"
+      >
+      </app-pages-display>
+    </div>
+
+    <div class="col-12 mb-4">
+        <app-results
+          [indexResult]="indexResult"
+          [tableScanResult]="tableScanResult"
+          [indexSearchTime]="indexSearchTime"
+          [tableScanTime]="tableScanTime"
+        >
+        </app-results>
+    </div>
+
+    <div class="col-12">
+      <app-statistics></app-statistics>
+    </div>
+  </div>
 </div>
 <app-log-modal></app-log-modal>
