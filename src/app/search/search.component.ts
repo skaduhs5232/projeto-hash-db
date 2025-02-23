@@ -40,7 +40,8 @@ export class SearchComponent {
     tableScanResult: any,
     indexSearchTime: number,
     tableScanTime: number,
-    searchWord: string
+    searchWord: string,
+    updateStats: boolean
   }>();
   
   emitResults(): void {
@@ -49,7 +50,8 @@ export class SearchComponent {
       tableScanResult: this.tableScanResult,
       indexSearchTime: this.indexSearchTime,
       tableScanTime: this.tableScanTime,
-      searchWord: this.searchKey
+      searchWord: this.searchKey,
+      updateStats: true
     });
   }
 }

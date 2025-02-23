@@ -3,21 +3,17 @@
     <h2 class="card-title">Estatísticas</h2>
 
     <!-- Taxa de Colisões e Overflow lado a lado -->
-    <div
-      class="row mb-4"
-      style="display: flex;gap: 44px;align-items: center;justify-content: center;">
+    <div class="row mb-4 stats-row">
       <div class="col-md-6">
-        <div class="stats-info">
+        <div class="stats-info" [class.updated]="justUpdated">
           <h4>Taxa de Colisões</h4>
           <p class="stat-value">{{ collisionRate.toFixed(2) }}%</p>
-          <small class="text-muted"
-            >Porcentagem de entradas que colidiram</small
-          >
+          <small class="text-muted">Porcentagem de entradas que colidiram</small>
         </div>
       </div>
 
       <div class="col-md-6">
-        <div class="stats-info">
+        <div class="stats-info" [class.updated]="justUpdated">
           <h4>Taxa de Overflow</h4>
           <p class="stat-value">{{ overflowRate.toFixed(2) }}%</p>
           <small class="text-muted">Porcentagem de entradas em overflow</small>

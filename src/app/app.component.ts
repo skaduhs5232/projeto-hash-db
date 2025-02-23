@@ -55,6 +55,7 @@ export class AppComponent {
     indexSearchTime: number;
     tableScanTime: number;
     searchWord: string;
+    updateStats: boolean;
   }): void {
     this.logService.addLog('[AppComponent] onSearchCompleted chamado');
     this.indexResult = event.indexResult;
@@ -62,6 +63,12 @@ export class AppComponent {
     this.indexSearchTime = event.indexSearchTime;
     this.tableScanTime = event.tableScanTime;
     this.currentSearchWord = event.searchWord;
+
+    if (event.updateStats && this.statisticsComponent) {
+      this.logService.addLog('[AppComponent] Atualizando estatísticas após busca...');
+      this.statisticsComponent.updateStatistics();
+    }
+    
     this.logService.addLog('[AppComponent] Resultados da pesquisa atualizados');
   }
 

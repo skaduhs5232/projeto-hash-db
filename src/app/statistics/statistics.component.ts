@@ -31,6 +31,7 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
   bucketDistribution: number[] = [];
 
   protected readonly isBrowser = typeof window !== 'undefined';
+  justUpdated: boolean = false;
 
   constructor(
     private dataService: DataService,
@@ -195,12 +196,20 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
   updateStatistics(): void {
     this.logService.addLog('[StatisticsComponent] Atualizando estatísticas...');
     const stats = this.dataService.calculateStatistics();
+    
+    // Atualiza os valores
     this.collisionRate = stats.collisionRate;
     this.overflowRate = stats.overflowRate;
     this.bucketsUsed = stats.bucketsUsed;
     this.emptyBuckets = stats.emptyBuckets;
     this.averageEntriesPerBucket = stats.averageEntriesPerBucket;
     this.bucketDistribution = stats.bucketDistribution;
+
+    // Ativa a animação
+    this.justUpdated = true;
+    setTimeout(() => {
+      this.justUpdated = false;
+    }, 1000);
 
     this.logService.addLog(`[StatisticsComponent] Taxa de Colisões: ${this.collisionRate.toFixed(2)}%`);
     this.logService.addLog(`[StatisticsComponent] Taxa de Overflow: ${this.overflowRate.toFixed(2)}%`);

@@ -35,9 +35,9 @@ export class DataService {
 
         // Adicionar algumas palavras de teste garantidas
         words.push('teste123');
-        words.push('palavra');
-        words.push('buscar');
-        words.push('encontrar');
+        words.push('funfou');
+        words.push('db');
+        words.push('alan');
 
         this.totalRecords = words.length; // Atualiza o total de registros
         this.pages = []; // Reinicia as páginas
@@ -54,7 +54,7 @@ export class DataService {
         }
 
         this.logService.addLog(
-          `[DataService] Palavras de teste adicionadas: teste123, palavra, buscar, encontrar`
+          `[DataService] Palavras de teste adicionadas`
         );
         return this.pages; // Retorna as páginas criadas
       })
@@ -63,16 +63,14 @@ export class DataService {
 
   // Constrói o índice hash, criando os buckets e inserindo as entradas
   buildHashIndex(): void {
-    // Ajustar número de buckets baseado no tamanho das páginas
-    this.numBuckets = Math.ceil(
-      this.totalRecords / (this.maxEntriesPerBucket * 2)
-    );
+    // Ajustar número de buckets baseado no tamanho total de registros
+    this.numBuckets = Math.ceil(this.totalRecords / this.maxEntriesPerBucket);
     this.logService.addLog(
       `[HashIndex] Criando ${this.numBuckets} buckets (maxEntries=${this.maxEntriesPerBucket})`
     );
 
     this.buckets = Array.from({ length: this.numBuckets }, () => new Bucket());
-
+    
     let totalInserted = 0;
     for (let page of this.pages) {
       for (let record of page.records) {
@@ -199,6 +197,7 @@ export class DataService {
     for (const bucket of this.buckets) {
         const mainEntries = bucket.entries.length;
         const overflowEntries = bucket.overflow.length;
+        totalEntries += mainEntries + overflowEntries;
         
         if (mainEntries === 0 && overflowEntries === 0) {
             emptyBuckets++;
@@ -206,12 +205,11 @@ export class DataService {
         }
 
         bucketsUsed++;
-        totalEntries += mainEntries + overflowEntries;
         totalOverflows += overflowEntries;
 
-        // Colisões ocorrem quando há mais de uma entrada no bucket (principal + overflow)
+        // Uma colisão ocorre quando mais de um elemento tenta usar o mesmo bucket
         if (mainEntries + overflowEntries > 1) {
-            totalCollisions += (mainEntries + overflowEntries) - 1;
+            totalCollisions += mainEntries + overflowEntries - 1;
         }
     }
 
@@ -219,10 +217,25 @@ export class DataService {
         bucket => bucket.entries.length + bucket.overflow.length
     );
 
-    // Calcular taxas baseadas no total de registros
-    const collisionRate = (totalCollisions / this.totalRecords) * 100;
-    const overflowRate = (totalOverflows / this.totalRecords) * 100;
-    const averageEntriesPerBucket = bucketsUsed > 0 ? totalEntries / bucketsUsed : 0;
+    // Ajuste no cálculo das taxas
+    const totalRecordsProcessed = totalEntries;
+    const collisionRate = totalRecordsProcessed > 0 
+        ? (totalCollisions / totalRecordsProcessed) * 100 
+        : 0;
+    const overflowRate = totalRecordsProcessed > 0 
+        ? (totalOverflows / totalRecordsProcessed) * 100 
+        : 0;
+    const averageEntriesPerBucket = this.numBuckets > 0 
+        ? totalEntries / this.numBuckets 
+        : 0;
+
+    this.logService.addLog(`[DataService] Estatísticas calculadas:`);
+    this.logService.addLog(`- Total de registros: ${totalRecordsProcessed}`);
+    this.logService.addLog(`- Total de colisões: ${totalCollisions}`);
+    this.logService.addLog(`- Total de overflows: ${totalOverflows}`);
+    this.logService.addLog(`- Buckets utilizados: ${bucketsUsed}/${this.numBuckets}`);
+    this.logService.addLog(`- Taxa de colisão: ${collisionRate.toFixed(2)}%`);
+    this.logService.addLog(`- Taxa de overflow: ${overflowRate.toFixed(2)}%`);
 
     return {
         collisionRate,
