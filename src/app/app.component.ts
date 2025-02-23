@@ -10,6 +10,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { DataService } from './data.service'; // Importe o DataService
 import { LogModalComponent } from './components/log-modal/log-modal.component';
 import { LogService } from './services/log.service';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 
 @Component({
   standalone: true,
@@ -24,6 +25,7 @@ import { LogService } from './services/log.service';
     ResultsComponent,
     StatisticsComponent,
     LogModalComponent,
+    ThemeToggleComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

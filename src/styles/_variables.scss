@@ -13,6 +13,28 @@ $colors: (
   'gray-300': #dee2e6
 );
 
+// Theme colors
+$theme-colors: (
+  'light': (
+    'primary': #2196f3,
+    'secondary': #1976d2,
+    'background': #f5f5f5,
+    'text': #333333,
+    'border': #dddddd,
+    'card-bg': #ffffff,
+    'input-bg': #ffffff
+  ),
+  'dark': (
+    'primary': #90caf9,
+    'secondary': #42a5f5,
+    'background': #121212,
+    'text': #ffffff,
+    'border': #404040,
+    'card-bg': #1e1e1e,
+    'input-bg': #2d2d2d
+  )
+);
+
 // Typography
 $font-family-base: 'Roboto', sans-serif;
 $font-sizes: (

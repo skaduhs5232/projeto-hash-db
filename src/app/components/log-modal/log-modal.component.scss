@@ -5,20 +5,21 @@
   transform: translateY(-50%);
   width: 400px;
   max-height: 600px;
-  background-color: white;
+  background-color: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px var(--shadow-color);
   z-index: 1000;
   cursor: grab;
+  color: var(--text-color);
 }
 
 .log-header {
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f8f9fa;
+  background-color: var(--surface-color);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   cursor: grab;
@@ -26,33 +27,53 @@
 
 .log-content {
   height: 500px;
+  background-color: var(--card-bg);
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--surface-color);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+  }
 }
 
 .log-entry {
   padding: 8px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--border-color);
   font-family: monospace;
   font-size: 12px;
+  
+  &:hover {
+    background-color: var(--hover-color);
+  }
 }
 
 .clear-btn {
   padding: 5px 10px;
   border: none;
-  background-color: #dc3545;
+  background-color: var(--error-color);
   color: white;
   border-radius: 4px;
   cursor: pointer;
-}
+  transition: opacity 0.2s;
 
-.clear-btn:hover {
-  background-color: #c82333;
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 /* Estilo quando estiver arrastando */
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.3);
+  box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .cdk-drag-animating {

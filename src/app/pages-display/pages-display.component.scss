@@ -1,8 +1,9 @@
 .pages-container {
   padding: 2rem;
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px var(--shadow-color);
+  color: var(--text-color);
 }
 
 .pages-grid {
@@ -13,8 +14,9 @@
 }
 
 .page-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
   border-radius: 0.375rem;
   padding: 1.5rem;
   transition: transform 0.2s ease;
@@ -74,16 +76,22 @@
 
 .record-item {
   padding: 0.5rem;
-  border-bottom: 1px solid #e2e8f0;
-  font-size: 0.875rem;
-  color: #334155;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover {
-    background: #f1f5f9;
+    background: var(--hover-color);
+  }
+
+  &.highlighted {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
   }
 }
 

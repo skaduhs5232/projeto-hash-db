@@ -1,8 +1,8 @@
 .statistics-container {
-  background: white;
+  background: var(--card-bg);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--shadow-color);
 
   .stats-grid {
     display: grid;
@@ -13,8 +13,9 @@
     .stat-card {
       padding: 15px;
       border-radius: 4px;
-      background-color: #f8f9fa;
+      background-color: var(--surface-color);
       border: 1px solid var(--border-color);
+      color: var(--text-color);
 
       h3 {
         margin: 0 0 10px 0;
@@ -25,15 +26,18 @@
         margin: 0;
         font-size: 1.2em;
         font-weight: bold;
+        color: var(--text-color);
       }
     }
   }
 }
+
 .stats-info {
   text-align: center;
   padding: 15px;
   border-radius: 8px;
-  background-color: #f8f9fa;
+  background-color: var(--surface-color);
+  color: var(--text-color);
 }
 
 .stat-value {

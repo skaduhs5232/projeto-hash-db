@@ -1,8 +1,9 @@
 .results-container {
-  background: white;
+  background: var(--card-bg);
   padding: 2rem;
   border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-color);
+  color: var(--text-color);
 }
 
 .results-header {
@@ -10,7 +11,7 @@
   
   h2 {
     font-size: 1.5rem;
-    color: #1e293b;
+    color: var(--text-color);
     margin-bottom: 1rem;
   }
 }
@@ -33,42 +34,43 @@
 }
 
 .result-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   overflow: hidden;
   transition: transform 0.2s ease;
+  background-color: var(--surface-color);
 
   &:hover {
     transform: translateY(-2px);
   }
 
   &.found {
-    border-color: #10b981;
+    border-color: var(--success-color);
   }
 }
 
 .card-header {
-  background: #f8fafc;
+  background: var(--surface-color);
   padding: 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   h3 {
     font-size: 1.25rem;
-    color: #1e293b;
+    color: var(--text-color);
     margin: 0;
   }
 }
 
 .method-badge {
-  background: #e2e8f0;
+  background: var(--surface-color);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #475569;
+  color: var(--text-color);
 }
 
 .card-content {
@@ -83,16 +85,16 @@
   .status-icon {
     font-size: 1.5rem;
     margin-right: 0.75rem;
-    color: #ef4444;
+    color: var(--error-color);
 
     &.success {
-      color: #10b981;
+      color: var(--success-color);
     }
   }
 
   .status-text {
     font-size: 1rem;
-    color: #475569;
+    color: var(--text-color);
   }
 }
 
@@ -108,13 +110,14 @@
   label {
     display: block;
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-color);
+    opacity: 0.7;
     margin-bottom: 0.25rem;
   }
 
   span {
     font-size: 1rem;
-    color: #1e293b;
+    color: var(--text-color);
     font-weight: 500;
   }
 }
@@ -122,11 +125,11 @@
 .comparison-details {
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border-color);
 
   h4 {
     font-size: 1rem;
-    color: #1e293b;
+    color: var(--text-color);
     margin-bottom: 1rem;
   }
 }
@@ -138,20 +141,21 @@
 }
 
 .comparison-metric {
-  background: #f8fafc;
+  background: var(--surface-color);
   padding: 1rem;
   border-radius: 0.5rem;
 
   label {
     display: block;
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-color);
+    opacity: 0.7;
     margin-bottom: 0.5rem;
   }
 
   span {
     font-size: 1rem;
-    color: #1e293b;
+    color: var(--text-color);
     font-weight: 500;
   }
 }

@@ -1,20 +1,21 @@
 :host {
   display: block;
-  background-color: #f5f7fa;
+  background-color: var(--background-color);
   min-height: 100vh;
   padding: 20px;
+  color: var(--text-color);
   
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    background-color: white;
+    background-color: var(--card-bg);
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px var(--shadow-color);
     padding: 25px;
     
     h1 {
       margin-bottom: 30px;
-      color: #333;
+      color: var(--text-color);
       font-weight: 500;
     }
     
@@ -27,12 +28,12 @@
       .col-12 {
         width: 100%;
         padding: 15px;
-        background-color: #fafafa;
+        background-color: var(--surface-color);
         border-radius: 6px;
-        border: 1px solid #eee;
+        border: 1px solid var(--border-color);
         
         &:hover {
-          border-color: #ddd;
+          border-color: var(--primary-color);
         }
       }
     }

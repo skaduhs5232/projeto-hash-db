@@ -7,7 +7,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-log-modal',
   templateUrl: './log-modal.component.html',
-  styleUrls: ['./log-modal.component.css'],
+  styleUrls: ['./log-modal.component.scss'],
   standalone: true,
   imports: [CommonModule, NgScrollbarModule, DragDropModule]
 })
