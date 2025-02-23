@@ -29,7 +29,7 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [DataService],
+  providers: [DataService, LogService],
 })
 export class AppComponent {
   indexResult: any;

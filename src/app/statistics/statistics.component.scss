@@ -34,10 +34,27 @@
 
 .stats-info {
   text-align: center;
-  padding: 15px;
+  padding: 20px;
   border-radius: 8px;
   background-color: var(--surface-color);
-  color: var(--text-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 100%;
+
+  h4 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+  }
+
+  .text-muted {
+    font-size: 0.9rem;
+  }
 }
 
 .stat-value {
@@ -72,4 +89,42 @@
 /* Make the line chart span full width */
 .chart-container:last-child {
   grid-column: 1 / -1;
+}
+
+.statistics-card {
+  margin-bottom: 90px;
+  padding: 20px;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+
+  .chart-container {
+    background: var(--surface-color);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 300px;
+
+    &.full-width {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-info {
+    margin-bottom: 20px;
+  }
+}
+
+.charts-container {
+  margin-top: 30px;
 }

@@ -25,11 +25,12 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
   collisionRate: number = 0;
   overflowRate: number = 0;
 
-  // Adicionar novas propriedades para dados estatísticos
   bucketsUsed: number = 0;
   emptyBuckets: number = 0;
   averageEntriesPerBucket: number = 0;
   bucketDistribution: number[] = [];
+
+  protected readonly isBrowser = typeof window !== 'undefined';
 
   constructor(
     private dataService: DataService,
@@ -38,10 +39,14 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.logService.addLog('[StatisticsComponent] Componente inicializado');
+    this.updateStatistics();
   }
 
   ngAfterViewInit() {
-    // Aguardar o DOM estar pronto
+    if (typeof window === 'undefined') return; // Proteção SSR
+
+    this.logService.addLog('[StatisticsComponent] Inicializando gráficos...');
+    // Aumenta o delay para garantir que o DOM está completamente carregado
     setTimeout(() => {
       this.updateStatistics();
       this.initCharts();
@@ -49,149 +54,142 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
   }
 
   private initCharts() {
+    // Verifica se está rodando no browser
+    if (typeof window === 'undefined') {
+      return; // Não executa no SSR
+    }
+
+    if (!this.barChartCanvas?.nativeElement || !this.pieChartCanvas?.nativeElement || !this.lineChartCanvas?.nativeElement) {
+      this.logService.addLog('[StatisticsComponent] ERRO: Elementos Canvas não encontrados');
+      return;
+    }
+
     try {
-      this.logService.addLog('[Statistics] Iniciando criação dos gráficos...');
+      this.logService.addLog('[StatisticsComponent] Iniciando criação dos gráficos');
+      this.destroyCharts();
       
-      if (this.barChartCanvas?.nativeElement) {
+      // Adiciona um pequeno delay para garantir que o DOM está pronto
+      requestAnimationFrame(() => {
         this.initBarChart();
-      }
-      
-      if (this.pieChartCanvas?.nativeElement) {
         this.initPieChart();
-      }
-      
-      if (this.lineChartCanvas?.nativeElement) {
         this.initLineChart();
-      }
-      
-      this.logService.addLog('[Statistics] Gráficos criados com sucesso');
+        this.logService.addLog('[StatisticsComponent] Gráficos criados com sucesso');
+      });
     } catch (error) {
-      this.logService.addLog(`[Statistics] Erro ao criar gráficos: ${error}`);
+      this.logService.addLog(`[StatisticsComponent] Erro ao criar gráficos: ${error}`);
+    }
+  }
+
+  private destroyCharts() {
+    if (this.barChart) {
+      this.barChart.destroy();
+      this.barChart = undefined;
+    }
+    if (this.pieChart) {
+      this.pieChart.destroy();
+      this.pieChart = undefined;
+    }
+    if (this.lineChart) {
+      this.lineChart.destroy();
+      this.lineChart = undefined;
     }
   }
 
   private initBarChart() {
-    if (!this.barChartCanvas) return;
-    const ctx = this.barChartCanvas.nativeElement.getContext('2d');
-    if (!ctx) return;
+    if (typeof window === 'undefined') return; // Proteção SSR
 
-    try {
-      this.barChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Taxa de Colisões', 'Taxa de Overflow'],
-          datasets: [{
-            label: 'Porcentagem %',
-            data: [this.collisionRate, this.overflowRate],
-            backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)'],
-            borderColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            title: {
-              display: true,
-              text: 'Estatísticas do Hash'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100
-            }
-          }
-        }
-      });
-      this.logService.addLog('[Statistics] Gráfico de barras criado');
-    } catch (error) {
-      this.logService.addLog(`[Statistics] Erro ao criar gráfico de barras: ${error}`);
+    const canvas = this.barChartCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      this.logService.addLog('[StatisticsComponent] Erro: Contexto 2D não disponível');
+      return;
     }
+
+    this.barChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Taxa de Colisões', 'Taxa de Overflow'],
+        datasets: [{
+          label: 'Porcentagem %',
+          data: [this.collisionRate, this.overflowRate],
+          backgroundColor: ['rgba(54,162,235,0.5)', 'rgba(255,99,132,0.5)'],
+          borderColor: ['rgb(54,162,235)', 'rgb(255,99,132)'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Taxas de Colisão e Overflow'
+          }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
   }
 
   private initPieChart() {
-    if (!this.pieChartCanvas) return;
-    const ctx = this.pieChartCanvas.nativeElement.getContext('2d');
-    if (!ctx) return;
+    if (typeof window === 'undefined') return; // Proteção SSR
 
-    try {
-      this.pieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['Buckets Utilizados', 'Buckets Vazios'],
-          datasets: [{
-            data: [this.bucketsUsed, this.emptyBuckets],
-            backgroundColor: [
-              'rgba(75, 192, 192, 0.5)',
-              'rgba(201, 203, 207, 0.5)'
-            ],
-            borderColor: [
-              'rgb(75, 192, 192)',
-              'rgb(201, 203, 207)'
-            ],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            title: {
-              display: true,
-              text: 'Distribuição de Buckets'
-            },
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }
-      });
-      this.logService.addLog('[Statistics] Gráfico de pizza criado');
-    } catch (error) {
-      this.logService.addLog(`[Statistics] Erro ao criar gráfico de pizza: ${error}`);
+    const canvas = this.pieChartCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      this.logService.addLog('[StatisticsComponent] Erro: Contexto 2D não disponível');
+      return;
     }
+
+    this.pieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Buckets Utilizados', 'Buckets Vazios'],
+        datasets: [{
+          data: [this.bucketsUsed, this.emptyBuckets],
+          backgroundColor: ['rgba(75,192,192,0.5)', 'rgba(201,203,207,0.5)'],
+          borderColor: ['rgb(75,192,192)', 'rgb(201,203,207)']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Distribuição de Buckets' }
+        }
+      }
+    });
   }
 
   private initLineChart() {
-    if (!this.lineChartCanvas) return;
-    const ctx = this.lineChartCanvas.nativeElement.getContext('2d');
-    if (!ctx) return;
+    if (typeof window === 'undefined') return; // Proteção SSR
 
-    try {
-      this.lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: this.bucketDistribution.map((_, i) => `Bucket ${i}`),
-          datasets: [{
-            label: 'Entradas por Bucket',
-            data: this.bucketDistribution,
-            borderColor: 'rgb(54, 162, 235)',
-            tension: 0.1,
-            fill: false
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            title: {
-              display: true,
-              text: 'Distribuição de Entradas por Bucket'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-      this.logService.addLog('[Statistics] Gráfico de linha criado');
-    } catch (error) {
-      this.logService.addLog(`[Statistics] Erro ao criar gráfico de linha: ${error}`);
+    const canvas = this.lineChartCanvas.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      this.logService.addLog('[StatisticsComponent] Erro: Contexto 2D não disponível');
+      return;
     }
+
+    this.lineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: this.bucketDistribution.map((_, i) => `Bucket ${i}`),
+        datasets: [{
+          label: 'Entradas por Bucket',
+          data: this.bucketDistribution,
+          borderColor: 'rgb(54,162,235)',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Distribuição por Bucket' }
+        },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
   }
 
   updateStatistics(): void {
@@ -204,26 +202,23 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
     this.averageEntriesPerBucket = stats.averageEntriesPerBucket;
     this.bucketDistribution = stats.bucketDistribution;
 
-    // Atualizar gráficos com delay para garantir que foram inicializados
-    setTimeout(() => {
-      if (this.barChart) {
-        this.barChart.data.datasets[0].data = [
-          Number(this.collisionRate.toFixed(2)),
-          Number(this.overflowRate.toFixed(2))
-        ];
-        this.barChart.update();
-      }
+    this.logService.addLog(`[StatisticsComponent] Taxa de Colisões: ${this.collisionRate.toFixed(2)}%`);
+    this.logService.addLog(`[StatisticsComponent] Taxa de Overflow: ${this.overflowRate.toFixed(2)}%`);
+    this.logService.addLog(`[StatisticsComponent] Buckets Utilizados: ${this.bucketsUsed}`);
+    this.logService.addLog(`[StatisticsComponent] Buckets Vazios: ${this.emptyBuckets}`);
+    this.logService.addLog(`[StatisticsComponent] Média de Entradas por Bucket: ${this.averageEntriesPerBucket.toFixed(2)}`);
 
-      if (this.pieChart) {
-        this.pieChart.data.datasets[0].data = [this.bucketsUsed, this.emptyBuckets];
-        this.pieChart.update();
-      }
-
-      if (this.lineChart) {
-        this.lineChart.data.labels = this.bucketDistribution.map((_, i) => `Bucket ${i}`);
-        this.lineChart.data.datasets[0].data = this.bucketDistribution;
-        this.lineChart.update();
-      }
-    }, 100);
+    if (this.barChart && this.pieChart && this.lineChart) {
+      this.logService.addLog('[StatisticsComponent] Atualizando gráficos...');
+      this.barChart.data.datasets[0].data = [this.collisionRate, this.overflowRate];
+      this.barChart.update();
+      
+      this.pieChart.data.datasets[0].data = [this.bucketsUsed, this.emptyBuckets];
+      this.pieChart.update();
+      
+      this.lineChart.data.labels = this.bucketDistribution.map((_, i) => `Bucket ${i}`);
+      this.lineChart.data.datasets[0].data = this.bucketDistribution;
+      this.lineChart.update();
+    }
   }
 }
