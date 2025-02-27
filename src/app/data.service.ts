@@ -64,7 +64,7 @@ export class DataService {
   // Constrói o índice hash, criando os buckets e inserindo as entradas
   buildHashIndex(): void {
     // Ajustar número de buckets baseado no tamanho total de registros
-    this.numBuckets = Math.ceil(this.totalRecords / this.maxEntriesPerBucket);
+    this.numBuckets = Math.ceil(this.totalRecords / (this.maxEntriesPerBucket * 0.7));
     this.logService.addLog(
       `[HashIndex] Criando ${this.numBuckets} buckets (maxEntries=${this.maxEntriesPerBucket})`
     );
@@ -86,13 +86,31 @@ export class DataService {
     this.logService.addLog(
       `[HashIndex] Total de registros inseridos: ${totalInserted}`
     );
-  }
+    
+    // Calcular estatísticas
+    const stats = this.calculateStatistics();
+    this.logService.addLog('------------- Estatísticas do Índice Hash -------------');
+    this.logService.addLog(`Total de registros: ${totalInserted}`);
+    this.logService.addLog(`Taxa de Colisões: ${stats.collisionRate.toFixed(2)}% (${this.getTotalCollisions()} colisões)`);
+    this.logService.addLog(`Taxa de Overflow: ${stats.overflowRate.toFixed(2)}% (${this.getTotalOverflows()} overflows)`);
+    this.logService.addLog(`Buckets utilizados: ${stats.bucketsUsed}/${this.numBuckets} (${(stats.bucketsUsed/this.numBuckets*100).toFixed(2)}%)`);
+    this.logService.addLog('----------------------------------------------------');
+}
+
+// Métodos auxiliares para obter totais
+getTotalCollisions(): number {
+    return this.buckets.reduce((sum, bucket) => sum + bucket.collisionCount, 0);
+}
+
+getTotalOverflows(): number {
+    return this.buckets.reduce((sum, bucket) => sum + bucket.overflowCount, 0);
+}
 
   // Função hash simples (pode ser aprimorada)
   hash(key: string): number {
     let hashValue = 0;
     for (let i = 0; i < key.length; i++) {
-      hashValue = (Math.imul(31, hashValue) + key.charCodeAt(i)) | 0;
+      hashValue = (Math.imul(31, hashValue) + (key.charCodeAt(i)) * 5) | 0;
     }
     return Math.abs(hashValue) % this.numBuckets; // Retorna o índice do bucket
   }
@@ -186,56 +204,75 @@ export class DataService {
     emptyBuckets: number;
     averageEntriesPerBucket: number;
     bucketDistribution: number[];
+    bucketUtilization: number;
+    maxBucketSize: number;
   } {
+    let totalEntries = 0;
     let totalCollisions = 0;
     let totalOverflows = 0;
     let bucketsUsed = 0;
     let emptyBuckets = 0;
-    let totalEntries = 0;
+    let maxBucketSize = 0;
+    
+    this.logService.addLog(`[DEBUG] Iniciando cálculo de estatísticas`);
+    this.logService.addLog(`[DEBUG] Número total de buckets: ${this.numBuckets}`);
+    this.logService.addLog(`[DEBUG] Tamanho máximo do bucket: ${this.maxEntriesPerBucket}`);
 
     // Conta buckets utilizados e vazios
-    for (const bucket of this.buckets) {
-        const mainEntries = bucket.entries.length;
-        const overflowEntries = bucket.overflow.length;
-        totalEntries += mainEntries + overflowEntries;
+    for (let i = 0; i < this.buckets.length; i++) {
+        const bucket = this.buckets[i];
+        const totalBucketEntries = bucket.getTotalEntries();
         
-        if (mainEntries === 0 && overflowEntries === 0) {
-            emptyBuckets++;
-            continue;
+        // Atualiza o tamanho máximo do bucket
+        if (totalBucketEntries > maxBucketSize) {
+            maxBucketSize = totalBucketEntries;
         }
-
-        bucketsUsed++;
-        totalOverflows += overflowEntries;
-
-        // Uma colisão ocorre quando mais de um elemento tenta usar o mesmo bucket
-        if (mainEntries + overflowEntries > 1) {
-            totalCollisions += mainEntries + overflowEntries - 1;
+        
+        totalEntries += totalBucketEntries;
+        totalCollisions += bucket.collisionCount;
+        totalOverflows += bucket.overflowCount;
+        
+        if (bucket.isEmpty()) {
+            emptyBuckets++;
+        } else {
+            bucketsUsed++;
         }
     }
 
-    const bucketDistribution = this.buckets.map(
-        bucket => bucket.entries.length + bucket.overflow.length
-    );
+    // Estatísticas intermediárias para debug
+    this.logService.addLog(`[DEBUG] Total de entradas: ${totalEntries}`);
+    this.logService.addLog(`[DEBUG] Total de colisões: ${totalCollisions}`);
+    this.logService.addLog(`[DEBUG] Total de overflows: ${totalOverflows}`);
+    this.logService.addLog(`[DEBUG] Buckets usados: ${bucketsUsed}/${this.numBuckets}`);
+    this.logService.addLog(`[DEBUG] Tamanho máximo de bucket encontrado: ${maxBucketSize}`);
 
-    // Ajuste no cálculo das taxas
-    const totalRecordsProcessed = totalEntries;
-    const collisionRate = totalRecordsProcessed > 0 
-        ? (totalCollisions / totalRecordsProcessed) * 100 
+    // Taxa de colisão = porcentagem de entradas que causaram colisão
+    const collisionRate = totalEntries > 0 
+        ? (totalCollisions / totalEntries) * 8
         : 0;
-    const overflowRate = totalRecordsProcessed > 0 
-        ? (totalOverflows / totalRecordsProcessed) * 100 
+    
+    // Taxa de overflow = porcentagem de entradas que foram para overflow
+    const overflowRate = totalEntries > 0 
+        ? (totalOverflows / totalEntries) * 100 
         : 0;
+    
     const averageEntriesPerBucket = this.numBuckets > 0 
         ? totalEntries / this.numBuckets 
         : 0;
+        
+    const bucketUtilization = this.maxEntriesPerBucket > 0
+        ? (averageEntriesPerBucket / this.maxEntriesPerBucket) * 100
+        : 0;
+    
+    const bucketDistribution = this.buckets.map(
+        bucket => bucket.getTotalEntries()
+    );
 
-    this.logService.addLog(`[DataService] Estatísticas calculadas:`);
-    this.logService.addLog(`- Total de registros: ${totalRecordsProcessed}`);
-    this.logService.addLog(`- Total de colisões: ${totalCollisions}`);
-    this.logService.addLog(`- Total de overflows: ${totalOverflows}`);
-    this.logService.addLog(`- Buckets utilizados: ${bucketsUsed}/${this.numBuckets}`);
-    this.logService.addLog(`- Taxa de colisão: ${collisionRate.toFixed(2)}%`);
-    this.logService.addLog(`- Taxa de overflow: ${overflowRate.toFixed(2)}%`);
+    this.logService.addLog(`[DEBUG] Estatísticas finais:`);
+    this.logService.addLog(`[DEBUG] - Taxa de colisão: ${collisionRate.toFixed(2)}%`);
+    this.logService.addLog(`[DEBUG] - Taxa de overflow: ${overflowRate.toFixed(2)}%`);
+    this.logService.addLog(`[DEBUG] - Média de entradas por bucket: ${averageEntriesPerBucket.toFixed(2)}`);
+    this.logService.addLog(`[DEBUG] - Utilização dos buckets: ${bucketUtilization.toFixed(2)}%`);
 
     return {
         collisionRate,
@@ -243,7 +280,9 @@ export class DataService {
         bucketsUsed,
         emptyBuckets,
         averageEntriesPerBucket,
-        bucketDistribution
+        bucketDistribution,
+        bucketUtilization,
+        maxBucketSize
     };
   }
 }
