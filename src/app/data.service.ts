@@ -248,7 +248,7 @@ getTotalOverflows(): number {
 
     // Taxa de colisão = porcentagem de entradas que causaram colisão
     const collisionRate = totalEntries > 0 
-        ? (totalCollisions / totalEntries) * 8
+        ? (totalCollisions / totalEntries) * 100
         : 0;
     
     // Taxa de overflow = porcentagem de entradas que foram para overflow

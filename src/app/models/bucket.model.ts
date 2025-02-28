@@ -13,19 +13,15 @@ export class Bucket {
       return;
     }
     
-    const totalEntries = this.entries.length + this.overflow.length;
-    
-    // Uma colisão ocorre quando qualquer entrada adicional vai para um bucket
-    // que já tem pelo menos uma entrada (a partir da segunda entrada)
-    if (totalEntries > 0) {
-      this.collisionCount++;
-    }
-
     // Se há espaço no bucket principal (ainda não atingiu maxEntries)
     if (this.entries.length < maxEntries) {
       this.entries.push(entry);
     } else {
-      // O bucket principal está cheio, então a entrada vai para overflow
+      // O bucket principal está cheio (já tem 10 entradas)
+      // Portanto, esta é uma colisão que causa overflow (a partir da 11ª entrada)
+      this.collisionCount++;
+      
+      // A entrada vai para overflow
       this.overflow.push(entry);
       // Incrementa o contador de overflow
       this.overflowCount++;
