@@ -13,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [CommonModule, FormsModule, HttpClientModule]
 })
 export class DataLoaderComponent implements OnInit {
-  pageSize: number = 1000; // valor inicial mais razoável
+  pageSize: number = 100; // valor inicial mais razoável
   minPageSize: number = 10;
   maxPageSize: number = 5000;
   isValidPageSize: boolean = true;

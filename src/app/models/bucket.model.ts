@@ -6,27 +6,23 @@ export class Bucket {
   collisionCount: number = 0;
   overflowCount: number = 0;
 
-  insert(entry: {key: string, page: number}, maxEntries: number): void {
-    // Verificar se a entrada já existe (evitar duplicatas)
-    if (this.entries.some(e => e.key === entry.key) || 
-        this.overflow.some(e => e.key === entry.key)) {
-      return;
-    }
-    
-    // Se há espaço no bucket principal (ainda não atingiu maxEntries)
+  insert(entry: { key: string, page: number }, maxEntries: number): void {
+
     if (this.entries.length < maxEntries) {
+      // Ainda há espaço no bucket principal
       this.entries.push(entry);
     } else {
-      // O bucket principal está cheio (já tem 10 entradas)
-      // Portanto, esta é uma colisão que causa overflow (a partir da 11ª entrada)
-      this.collisionCount++;
-      
-      // A entrada vai para overflow
+      // Se for o primeiro registro que excede o limite, contabiliza a colisão
+      if (this.overflow.length === 0) {
+        this.collisionCount++; // Conta uma única colisão para este bucket
+      }
+      // Adiciona a entrada ao overflow
       this.overflow.push(entry);
-      // Incrementa o contador de overflow
-      this.overflowCount++;
+      // Atualiza o contador de overflow (opcional, se necessário manter como total de entradas em overflow)
+      this.overflowCount = this.overflow.length;
     }
   }
+  
   
   // Método para obter o total de entradas no bucket
   getTotalEntries(): number {

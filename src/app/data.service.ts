@@ -115,8 +115,8 @@ getTotalOverflows(): number {
     return Math.abs(hashValue) % this.numBuckets; // Retorna o índice do bucket
   }
 
-      //Com fibonacci
-/*   hash(key: string): number {
+    //Com fibonacci
+/* hash(key: string): number {
     let hashValue = 0;
     for (let i = 0; i < key.length; i++) {
       hashValue = (Math.imul(31, hashValue) + key.charCodeAt(i)) | 0;
