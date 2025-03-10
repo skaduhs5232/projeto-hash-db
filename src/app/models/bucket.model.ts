@@ -18,7 +18,7 @@ export class Bucket {
       }
       // Adiciona a entrada ao overflow
       this.overflow.push(entry);
-      // Atualiza o contador de overflow (opcional, se necessário manter como total de entradas em overflow)
+      // Atualiza o contador de overflow
       this.overflowCount = this.overflow.length;
     }
   }
